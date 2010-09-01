@@ -257,163 +257,10 @@ namespace VPSO
             Console.ReadLine();
             return; // End of main program
         }
-        static double alea(double a, double b)
-        {				// random number (uniform distribution) in  [a b]
-            // randOption is a global parameter (see also Parameters.rand)
-            double r;
 
-            r = a + (double)rand_kiss() * (b - a) / Constants.RAND_MAX_KISS;
-
-            return r;
-        }
 
         // ===========================================================
-        static int alea_integer(int a, int b)
-        {				// Integer random number in [a b]
-            int ir;
-            double r;
 
-            r = alea(0, 1);
-            ir = (int)(a + r * (b + 1 - a));
-
-            if (ir > b) ir = b;
-            return ir;
-        }
-
-        // ===========================================================
-        static double alea_normal(double mean, double std_dev)
-        {
-            /*
-             Use the polar form of the Box-Muller transformation to obtain a pseudo
-             random number from a Gaussian distribution 
-             */
-            double x1, x2, w, y1;
-            // double y2;
-
-            do
-            {
-                x1 = 2.0 * alea(0, 1) - 1.0;
-                x2 = 2.0 * alea(0, 1) - 1.0;
-                w = x1 * x1 + x2 * x2;
-            }
-            while (w >= 1.0);
-
-            w = Math.Sqrt(-2.0 * Math.Log(w) / w);
-            y1 = x1 * w;
-            // y2 = x2 * w;
-            if (alea(0, 1) < 0.5) y1 = -y1;
-            y1 = y1 * std_dev + mean;
-            return y1;
-        }
-
-        // ===========================================================
-        static Velocity alea_sphere(int D, double radius1, double radius2,
-                                    int randType, double randGamma)
-        {
-            /*  ******* Random point in a hypersphere ********
-             Maurice Clerc 2003-07-11
-            Last update 2010-02-15
-
-            Put  a random point inside the hypersphere S (center 0 
-              between radius1 and radius2
-  
-            */
-
-            int j;
-            double length;
-            double r;
-            Velocity v = new Velocity(D);
-
-            v.Size = D;
-
-            // ----------------------------------- Step 1.  Direction
-            length = 0;
-            for (j = 0; j < D; j++)
-            {
-                v.V[j] = alea_normal(0, 1);
-                length = length + v.V[j] * v.V[j];
-            }
-
-            length = Math.Sqrt(length);
-
-            if (length > 0 && radius2 > 0)
-            {
-                //----------------------------------- Step 2.   Random radius
-                switch (randType)
-                {
-                    default:
-                        r = alea(0, 1);
-                        break;
-
-                    case 1:
-                        r = Math.Abs(alea_normal(0, randGamma));
-                        break;
-
-                }
-
-                for (j = 0; j < D; j++)
-                {
-                    v.V[j] = r * (radius2 - radius1) * v.V[j] / length;
-                }
-            }
-            else
-            {
-                for (j = 0; j < D; j++) v.V[j] = 0;
-            }
-            return v;
-        }
-
-        //==================================================
-        static int aleaInformant(double[] tab, int S)
-        {
-            /*
-                Define at random an informant, but according to a non uniform distribution
-                which is given by the table tab[]
-                Note 1: tab doesn't need to be normalised 
-            */
-
-            int t;
-            double[] tabCumul = new double[Constants.SMax];
-            double r;
-
-            tabCumul[0] = tab[0];
-            for (t = 1; t < S; t++) tabCumul[t] = tabCumul[t - 1] + tab[t];
-
-            r = alea(0, tabCumul[t - 1]);
-
-            for (t = 0; t < S; t++)
-            {
-                if (tabCumul[t] >= r) return t;
-            }
-
-            return S - 1;
-        }
-
-        //==================================================
-        static void aleaIndex(int[] index, int S)
-        {
-            int[] indexTemp = new int[Constants.SMax];
-            int length;
-            int rank;
-            int s;
-            int t;
-
-            length = S;
-            for (s = 0; s < S; s++) indexTemp[s] = s; //=index[s];
-
-            for (s = 0; s < S; s++)
-            {
-                rank = alea_integer(0, length - 1);
-                index[s] = indexTemp[rank];
-                //printf("\nalea152 s %i rank %i",s,rank);//printf("  ");
-                if (rank < length - 1)	// Compact
-                {
-                    for (t = rank; t < length - 1; t++)
-                        indexTemp[t] = indexTemp[t + 1];
-                }
-                length = length - 1;
-            }
-        }
         //============================================================= COEFF_SC
         static double coeff_SC(int D)
         {
@@ -469,37 +316,10 @@ namespace VPSO
          2^32*(2^32-1)*(2^63+2^32-1) > 2^127
          */
 
-        static ulong kiss_x = 1;
-        static ulong kiss_y = 2;
-        static ulong kiss_z = 4;
-        static ulong kiss_w = 8;
-        static ulong kiss_carry = 0;
-        static ulong kiss_k;
-        static ulong kiss_m;
 
 
-        static void seed_rand_kiss(ulong seed)
-        {
-            kiss_x = seed | 1;
-            kiss_y = seed | 2;
-            kiss_z = seed | 4;
-            kiss_w = seed | 8;
-            kiss_carry = 0;
-        }
 
-        static ulong rand_kiss()
-        {
-            kiss_x = kiss_x * 69069 + 1;
-            kiss_y ^= kiss_y << 13;
-            kiss_y ^= kiss_y >> 17;
-            kiss_y ^= kiss_y << 5;
-            kiss_k = (kiss_z >> 2) + (kiss_w >> 3) + (kiss_carry >> 2);
-            kiss_m = kiss_w + kiss_w + kiss_z + kiss_carry;
-            kiss_z = kiss_w;
-            kiss_w = kiss_m;
-            kiss_carry = kiss_k >> 30;
-            return kiss_x + kiss_y + kiss_w;
-        }
+
 
         //================================================
         static int compareDoubles(double a, double b)
@@ -537,11 +357,6 @@ namespace VPSO
 
         }
 
-        // ===========================================================
-        // ======================================================
-        //========================================================
-        //==========================================================
-        // =================================================================== POSITIONS
         static Position initPos(SwarmSize SwarmSize)
         /*
              Initialise a position
@@ -557,7 +372,7 @@ namespace VPSO
             //  Random uniform
             for (d = 0; d < pos.size; d++)
             {
-                pos.x[d] = alea(SwarmSize.min[d], SwarmSize.max[d]);
+                pos.x[d] = Alea.NextDouble(SwarmSize.min[d], SwarmSize.max[d]);
             }
             if (SwarmSize.valueNb > 0) // If only some values are acceptable
                 pos = Position.valueAccept(pos, SwarmSize.valueNb);
@@ -579,7 +394,7 @@ namespace VPSO
             for (d = 0; d < vel.Size; d++)
             {
                 vel.V[d] =
-                    (alea(SwarmSize.min[d], SwarmSize.max[d]) - pos.x[d]) / 2;
+                    (Alea.NextDouble(SwarmSize.min[d], SwarmSize.max[d]) - pos.x[d]) / 2;
             }
 
             return vel;
@@ -709,7 +524,7 @@ namespace VPSO
             // Complete the velocity
             for (d = 0; d < pb.SwarmSize.D; d++)
             {
-                xv.v.V[d] = xv.v.V[d] + alea(0, c1) * PX.V[d];
+                xv.v.V[d] = xv.v.V[d] + Alea.NextDouble(0, c1) * PX.V[d];
 
             }
 
@@ -717,7 +532,7 @@ namespace VPSO
             {
                 for (d = 0; d < pb.SwarmSize.D; d++)
                 {
-                    xv.v.V[d] = xv.v.V[d] + alea(0, c2) * GX.V[d];
+                    xv.v.V[d] = xv.v.V[d] + Alea.NextDouble(0, c2) * GX.V[d];
                 }
             }
 
@@ -772,11 +587,6 @@ namespace VPSO
             //printf("\n %f",f);
             return f;
         }
-
-        // =============================================================================
-        static double max(double a, double b) { if (a < b) return b; return a; }
-        static double min(double a, double b) { if (a < b) return a; return b; }
-        // =============================================================================
 
 
         // ===========================================================
@@ -907,7 +717,7 @@ namespace VPSO
                 //fprintf(f_run,"\niter %i",iter); 
                 iter = iter + 1;
                 errorPrev = error;
-                aleaIndex(index, R.SW.S); // Random numbering of the particles
+                Alea.aleaIndex(index, R.SW.S); // Random numbering of the particles
 
                 if (initLinks == 1)	// Bidirectional ring topology. Randomly built
                 {
@@ -965,7 +775,7 @@ namespace VPSO
                     // Update the best previous position
                     if (betterThan(R.SW.X[s].f, R.SW.P[s].f) == 1) // Improvement of the previous best
                     {
-                        R.SW.P[s] = R.SW.X[s];
+                        R.SW.P[s] = R.SW.X[s].Clone();
                         improvTot++; // Increase the number of improvements during this iteration
 
                         // Memorise the improved position
@@ -1042,7 +852,7 @@ namespace VPSO
                         R.SW.X[s] = Position.discrete(xvNorm.x, pb); // If discrete search space
                         R.SW.X[s].f = Problem.perf(R.SW.X[s], pb);	 // Evaluation			
                         R.SW.V[s] = initVel(R.SW.X[s], pb.SwarmSize); // Init velocity						
-                        R.SW.P[s] = R.SW.X[s]; // Previous best = current position								
+                        R.SW.P[s] = R.SW.X[s].Clone(); // Previous best = current position								
                         R.SW.S = R.SW.S + 1; // Increase the swarm size
 
                         //fprintf(f_swarm,"%i %i  %f\n",iter, R.SW.S,error.f[0]);
