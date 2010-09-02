@@ -906,7 +906,7 @@ namespace VPSO
 
                     f = 0.6224 * x1 * x3 * x4 + 1.7781 * x2 * x3 * x3 + 3.1611 * x1 * x1 * x4 + 19.84 * x1 * x1 * x3;
 
-                    ff = Position.constraint(xs, pb.function, pb.epsConstr);
+                    ff = Position.Constraint(xs, pb.function, pb.epsConstr);
 
                     if (pb.constraint == 0)// Constraints, by penalty method
                     {
@@ -929,7 +929,7 @@ namespace VPSO
 
                     f = Math.PI * Math.PI * x2 * x3 * x3 * (x1 + 2) * 0.25;
                     // Constraints
-                    ff = Position.constraint(xs, pb.function, pb.epsConstr);
+                    ff = Position.Constraint(xs, pb.function, pb.epsConstr);
                     if (pb.constraint == 0)
                     {
                         if (ff.f[1] > 0) { c = 1 + ff.f[1]; f = f * c * c * c; }
@@ -1102,7 +1102,7 @@ namespace VPSO
                     // x3, x4, x5 [-3.2, 3.2]
 
                     f = Math.Exp(xs.x[0] * xs.x[1] * xs.x[2] * xs.x[3] * xs.x[4]);
-                    ff = Position.constraint(xs, pb.function, pb.epsConstr);
+                    ff = Position.Constraint(xs, pb.function, pb.epsConstr);
 
                     if (pb.constraint == 0) // Penalty method
                     {

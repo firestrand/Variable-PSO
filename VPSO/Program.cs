@@ -43,7 +43,7 @@ namespace VPSO
 
 
             // ----------------------------------------------- PROBLEM
-            functionCode = 4;
+            functionCode = 102; //TODO: Something seems wrong with Rosenbrockf6
             /* (see problemDef, cellular_phone, cec2005pb for precise definitions)
              0 Parabola (Sphere)
              1 Griewank
@@ -357,110 +357,6 @@ namespace VPSO
 
         }
 
-        static Position initPos(SwarmSize SwarmSize)
-        /*
-             Initialise a position
-             Note: possible constraints are not checked here. 
-             The position may be unfeasible	 
-             */
-        {
-            int d;
-            Position pos = new Position(Constants.DMax);
-
-            pos.size = SwarmSize.D;
-
-            //  Random uniform
-            for (d = 0; d < pos.size; d++)
-            {
-                pos.x[d] = Alea.NextDouble(SwarmSize.min[d], SwarmSize.max[d]);
-            }
-            if (SwarmSize.valueNb > 0) // If only some values are acceptable
-                pos = Position.valueAccept(pos, SwarmSize.valueNb);
-
-            return pos;
-        }
-
-        // ================================================================== VELOCITIES
-        static Velocity initVel(Position pos, SwarmSize SwarmSize)
-        {
-            int d;
-
-            Velocity vel = new Velocity(Constants.DMax);
-
-            vel.Size = pos.size;
-
-            // Half-diff  0.5*(alea-x)
-
-            for (d = 0; d < vel.Size; d++)
-            {
-                vel.V[d] =
-                    (Alea.NextDouble(SwarmSize.min[d], SwarmSize.max[d]) - pos.x[d]) / 2;
-            }
-
-            return vel;
-        }
-
-        //==============================================================================
-        static Position initFar(Problem pb, Parameters parameters)
-        {
-            // Try to find a new position that is "far" from all the memorised ones
-
-            //Note: memPos is a global variable
-            double[] coord = new double[Constants.MMax];
-            int d;
-            double delta;
-            double[] interv = new double[2];
-
-            int n;
-            Position xFar = new Position(Constants.DMax);
-
-            xFar.size = pb.SwarmSize.D;
-
-            for (d = 0; d < pb.SwarmSize.D; d++) // For each dimension
-            {
-
-                for (n = 0; n < memPos.Size; n++) coord[n] = memPos.M[n].x[d]; // All the coordinates on
-                // this dimension
-
-                Array.Sort(coord); // Sort them
-                // by increasing order
-
-                // Find the biggest intervall
-                interv[0] = coord[0];
-                interv[1] = coord[1];
-                delta = interv[1] - interv[0];
-
-                for (n = 1; n < memPos.Size - 1; n++)
-                {
-                    if (coord[n + 1] - coord[n] < delta) continue;
-
-                    interv[0] = coord[n];
-                    interv[1] = coord[n + 1];
-                    delta = interv[1] - interv[0];
-                }
-
-                
-
-                // Particular case, xMax
-                if (pb.SwarmSize.max[d] - coord[memPos.Size - 1] > delta)
-                {
-                    xFar.x[d] = pb.SwarmSize.max[d];
-                    delta = pb.SwarmSize.max[d] - coord[memPos.Size - 1];
-                }
-
-                // Particular case, xMin
-                if (coord[0] - pb.SwarmSize.min[d] > delta)
-                    xFar.x[d] = pb.SwarmSize.min[d];
-                else
-                    xFar.x[d] = 0.5 * (interv[1] + interv[0]);// Take the middle
-            }
-
-            xFar = Position.discrete(xFar, pb);
-            xFar.f = Problem.perf(xFar, pb);
-            return xFar;
-
-        }
-
         //============================================================
         static double potentiel(Position X, Archive list)
         {
@@ -649,14 +545,14 @@ namespace VPSO
             // Positions
             for (s = 0; s < R.SW.S; s++)
             {
-                R.SW.X[s] = initPos(pb.SwarmSize);
+                R.SW.X[s] = Position.Initialize(pb.SwarmSize);
                 memPos.memSave(R.SW.X[s]); 		// Save the position
             }
 
             // Velocities
             for (s = 0; s < R.SW.S; s++)
             {
-                R.SW.V[s] = initVel(R.SW.X[s], pb.SwarmSize);
+                R.SW.V[s] = Velocity.Initialize(R.SW.X[s], pb.SwarmSize);
             }
 
             // Discrete values
@@ -664,7 +560,7 @@ namespace VPSO
             //        takes discretisation into account (or if there is none)
             for (s = 0; s < R.SW.S; s++)
             {
-                R.SW.X[s] = Position.discrete(R.SW.X[s], pb);
+                R.SW.X[s] = Position.Discrete(R.SW.X[s], pb);
             }
 
 
@@ -701,7 +597,7 @@ namespace VPSO
 
             initLinks = 1;		// So that information links will beinitialized
             initLinkNb = 0; // Count the number of iterations between two reinit of the links
-            iter = 0; iterBegin = 0;
+            iter = 0;
             nEval = 0;
             noStop = 0;
             added = 0; removed = 0; // For information
@@ -717,7 +613,7 @@ namespace VPSO
                 //fprintf(f_run,"\niter %i",iter); 
                 iter = iter + 1;
                 errorPrev = error;
-                Alea.aleaIndex(index, R.SW.S); // Random numbering of the particles
+                Alea.Shuffle(index, R.SW.S); // Random numbering of the particles
 
                 if (initLinks == 1)	// Bidirectional ring topology. Randomly built
                 {
@@ -763,10 +659,10 @@ namespace VPSO
 
                     // Move	
                     xvNorm = move(R, s, g, pb, parameters);
-                    xvNorm.x = Position.discrete(xvNorm.x, pb);
+                    xvNorm.x = Position.Discrete(xvNorm.x, pb);
 
                     // Confinement and evaluation
-                    xvNorm = XV.confinement(xvNorm, pb);
+                    xvNorm.Confinement(pb);
 
                     // New position and new velocity
                     R.SW.X[s] = xvNorm.x;
@@ -848,10 +744,10 @@ namespace VPSO
                     if (R.SW.S < Constants.SMax) // if not too many particles
                     {
                         s = R.SW.S;
-                        R.SW.X[s] = initFar(pb, parameters); // Init in a non-searched area
-                        R.SW.X[s] = Position.discrete(xvNorm.x, pb); // If discrete search space
+                        R.SW.X[s] = memPos.InitializeFar(pb); // Init in a non-searched area
+                        R.SW.X[s] = Position.Discrete(xvNorm.x, pb); // If discrete search space
                         R.SW.X[s].f = Problem.perf(R.SW.X[s], pb);	 // Evaluation			
-                        R.SW.V[s] = initVel(R.SW.X[s], pb.SwarmSize); // Init velocity						
+                        R.SW.V[s] = Velocity.Initialize(R.SW.X[s], pb.SwarmSize); // Init velocity						
                         R.SW.P[s] = R.SW.X[s].Clone(); // Previous best = current position								
                         R.SW.S = R.SW.S + 1; // Increase the swarm size
 

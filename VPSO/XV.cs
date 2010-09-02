@@ -16,63 +16,52 @@ namespace VPSO
         public Position x;
         public Velocity v;
 
-        public static XV confinement(XV xv0,
+        public void Confinement(
                               Problem pb)
         {
             // Confinement and evaluation
             // Note: the two are together, for depending on the clamping option
             // 				there may be no evaluation at all
-            int d;
-            Fitness ff; // Just for constraints
-            int i;
-            XV xv;
-
-            xv = xv0;
-
             // Set to the bounds, and v to zero
 
-            for (d = 0; d < pb.SwarmSize.D; d++)
+            for (int d = 0; d < pb.SwarmSize.D; d++)
             {
-                if (xv.x.x[d] < pb.SwarmSize.minS[d])
+                if (x.x[d] < pb.SwarmSize.minS[d])
                 {
-                    xv.x.x[d] = pb.SwarmSize.minS[d];
-                    xv.v.V[d] = 0;
+                    x.x[d] = pb.SwarmSize.minS[d];
+                    v.V[d] = 0;
                 }
 
-                if (xv.x.x[d] > pb.SwarmSize.maxS[d])
+                if (x.x[d] > pb.SwarmSize.maxS[d])
                 {
-                    xv.x.x[d] = pb.SwarmSize.maxS[d];
-                    xv.v.V[d] = 0;
+                    x.x[d] = pb.SwarmSize.maxS[d];
+                    v.V[d] = 0;
                 }
             }
 
-            xv.x = Position.quantis(xv.x, pb.SwarmSize);
-
-            if (pb.constraint == 0) goto evaluation;
-
-            ff = Position.constraint(xv.x, pb.function, pb.epsConstr);
-
-            for (i = 1; i < ff.size; i++)
+            if (pb.constraint != 0)
             {
-                if (ff.f[i] <= 0) continue;
+                Fitness ff = Position.Constraint(this.x, pb.function, pb.epsConstr);
 
-                // If a constraint is not respected
-                // the velocity is decreased
-                // and the position moved accordingly
-                // in th HOPE that the new position will be OK
-                // (but we don't check it)
-                for (d = 0; d < pb.SwarmSize.D; d++)
+                for (int i = 1; i < ff.size; i++)
                 {
-                    xv.v.V[d] = xv.v.V[d] / 2;
-                    xv.x.x[d] = xv.x.x[d] - xv.v.V[d];
-                }
-                xv.x = Position.quantis(xv.x, pb.SwarmSize);
-            }
+                    if (ff.f[i] <= 0) continue;
 
-            evaluation:
+                    // If a constraint is not respected the velocity is decreased
+                    // and the position moved accordingly in th HOPE that the new position will be OK
+                    // (but we don't check it)
+                    for (int d = 0; d < pb.SwarmSize.D; d++)
+                    {
+                        v.V[d] = v.V[d]/2;
+                        x.x[d] = x.x[d] - v.V[d];
+                    }
+                    
+                }
+            }
+            x = Position.Quantis(x, pb.SwarmSize);
+
             // Evaluation
-            xv.x.f = Problem.perf(xv.x, pb);
-            return xv;
+            x.f = Problem.perf(x, pb);
         }
     };
 }

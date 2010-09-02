@@ -22,7 +22,7 @@ namespace VPSO
             return retVal;
         }
 
-        public static Position quantis(Position x, SwarmSize SwarmSize)
+        public static Position Quantis(Position x, SwarmSize swarmSize)
         {
             /*
              Quantisatition of a position
@@ -32,15 +32,15 @@ namespace VPSO
 
             for (int d = 0; d < x.size; d++)
             {
-                if (SwarmSize.q.Q[d] > Constants.Zero)	// Note that qd can't be < 0
+                if (swarmSize.q.Q[d] > Constants.Zero)	// Note that qd can't be < 0
                 {
-                    quantx.x[d] = SwarmSize.q.Q[d] * Math.Floor(0.5 + x.x[d] / SwarmSize.q.Q[d]);
+                    quantx.x[d] = swarmSize.q.Q[d] * Math.Floor(0.5 + x.x[d] / swarmSize.q.Q[d]);
                 }
             }
             return quantx;
         }
 
-        public static Position valueAccept(Position x, int valueNb)
+        public static Position ValueAccept(Position x, int valueNb)
         {
             // valueList[] is a global variable (see main.h)
             // Move the position to the nearest acceptable value, 
@@ -81,25 +81,25 @@ namespace VPSO
             return xv;
         }
 
-        public static Position discrete(Position pos0, Problem pb)
+        public static Position Discrete(Position pos0, Problem pb)
         {
             if (pb.SwarmSize.valueNb > 0) // The search space is a list of values
             {
-                return valueAccept(pos0, pb.SwarmSize.valueNb);
+                return ValueAccept(pos0, pb.SwarmSize.valueNb);
             }
 
             // Quantisation
-            Position pos = quantis(pos0, pb.SwarmSize);
+            Position pos = Quantis(pos0, pb.SwarmSize);
             return pos;
 
         }
 
-        public static Fitness constraint(Position x, int functCode, double epsConstr)
+        public static Fitness Constraint(Position x, int functCode, double epsConstr)
         {
             // ff[0] is defined in perf()
             // Variables specific to Coil compressing spring
-            const double Fmax = 1000.0;
-            const double Fp = 300;
+            const double fmax = 1000.0;
+            const double fp = 300;
             double Cf;
             double K;
             double sp;
@@ -110,8 +110,7 @@ namespace VPSO
             const double spm = 6.0;
             const double sw = 1.25;
             const double G = 11500000;
-            Fitness ff = new Fitness(Constants.DMax);
-            ff.size = 1; // Default value
+            Fitness ff = new Fitness(Constants.DMax) {size = 1};
 
             switch (functCode)
             {
@@ -129,13 +128,13 @@ namespace VPSO
 
                     Cf = 1 + 0.75 * x.x[2] / (x.x[1] - x.x[2]) + 0.615 * x.x[2] / x.x[1];
                     K = 0.125 * G * Math.Pow(x.x[2], 4) / (x.x[0] * x.x[1] * x.x[1] * x.x[1]);
-                    sp = Fp / K;
-                    lf = Fmax / K + 1.05 * (x.x[0] + 2) * x.x[2];
+                    sp = fp / K;
+                    lf = fmax / K + 1.05 * (x.x[0] + 2) * x.x[2];
 
-                    ff.f[1] = 8 * Cf * Fmax * x.x[1] / (Math.PI * x.x[2] * x.x[2] * x.x[2]) - S;
+                    ff.f[1] = 8 * Cf * fmax * x.x[1] / (Math.PI * x.x[2] * x.x[2] * x.x[2]) - S;
                     ff.f[2] = lf - lmax;
                     ff.f[3] = sp - spm;
-                    ff.f[4] = sw - (Fmax - Fp) / K;
+                    ff.f[4] = sw - (fmax - fp) / K;
                     break;
 
                 case 15:
@@ -150,6 +149,26 @@ namespace VPSO
             }
 
             return ff;
+        }
+        /// <summary>
+        ///  Initialise a position
+        /// Note: possible constraints are not checked here. 
+        /// The position may be unfeasible	
+        /// </summary>
+        public static Position Initialize(SwarmSize swarmSize)
+        {
+            int d;
+            var pos = new Position(Constants.DMax) {size = swarmSize.D};
+
+            //  Random uniform
+            for (d = 0; d < pos.size; d++)
+            {
+                pos.x[d] = Alea.NextDouble(swarmSize.min[d], swarmSize.max[d]);
+            }
+            if (swarmSize.valueNb > 0) // If only some values are acceptable
+                pos = ValueAccept(pos, swarmSize.valueNb);
+
+            return pos;
         }
     };
 }
