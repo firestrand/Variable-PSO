@@ -1,21 +1,21 @@
-﻿using System;
+using System;
 
-namespace VPSO
+namespace VPSO.Problem
 {
     public class Problem
     {
         public Problem()
         {
-            solution = new Position(Constants.DMax);
+            Solution = new Position(Constants.DMax);
             SwarmSize = new SwarmSize(Constants.DMax);
         }
-        public int constraint;			// Number of constraints
-        public double epsilon; 		// Admissible error
-        public double epsConstr;  // Admissible error for each constraint
-        public int evalMax; 			// Maximum number of fitness evaluations
+        public int Constraint;			// Number of constraints
+        public double Epsilon; 		// Admissible error
+        public double EpsilonConstraint;  // Admissible error for each constraint
+        public int EvaluationMaximum; 			// Maximum number of fitness evaluations
         public int function; 		// Function code
-        public double objective; 	// Objective value					
-        public Position solution; // Solution position (if known, just for tests)	
+        public double ObjectiveValue; 	// Objective value					
+        public Position Solution; // Solution position (if known, just for tests)	
         public SwarmSize SwarmSize;			// Search space
 
         public static Problem problemDef(int functionCode, string fLandscape)
@@ -23,7 +23,7 @@ namespace VPSO
             int d;
             int initDiff = 0; // For each function, you can define a specific 
             // initialisation space. In that case, you also have
-            // to set initDiff to a non zero value
+            //�to set initDiff to a non zero value
             Problem pb = new Problem(); // Initialised just for my stupid compiler
             int scanNb;
             float z = 0.0f;
@@ -34,9 +34,9 @@ namespace VPSO
                                           -32.77,-37.97,-44.33,-47.84,-52.32};
 
             pb.function = functionCode;
-            pb.epsilon = 0.00000;		// Acceptable error. Defalut value
-            pb.objective = 0;       // Objective value. Default value
-            pb.constraint = 0; 				// Number of constraints. Default value
+            pb.Epsilon = 0.00000;		// Acceptable error. Defalut value
+            pb.ObjectiveValue = 0;       // Objective value. Default value
+            pb.Constraint = 0; 				// Number of constraints. Default value
             pb.SwarmSize.valueNb = 0;
 
 
@@ -45,7 +45,7 @@ namespace VPSO
             // i.e. when stop criterion is distance_to_solution < epsilon
             for (d = 0; d < 30; d++)
             {
-                pb.solution.x[d] = 0;
+                pb.Solution.x[d] = 0;
             }
 
 
@@ -62,10 +62,10 @@ namespace VPSO
                         pb.SwarmSize.maxS[d] = pb.SwarmSize.max[d];
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
-                    pb.evalMax = pb.SwarmSize.D * 10000;
-                    pb.evalMax = 1000;
-                    pb.epsilon = 0.000001;	//Acceptable error
-                    pb.objective = -450;       // Objective value
+                    pb.EvaluationMaximum = pb.SwarmSize.D * 10000;
+                    pb.EvaluationMaximum = 1000;
+                    pb.Epsilon = 0.000001;	//Acceptable error
+                    pb.ObjectiveValue = -450;       // Objective value
                     break;
 
                 case 102:		// Rosenbrock. CEC 2005 F6
@@ -80,10 +80,10 @@ namespace VPSO
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
 
-                    pb.evalMax = pb.SwarmSize.D * 10000;
-                    pb.epsilon = 0.01;	// Acceptable error
-                    pb.objective = 390;
-                    //pb.evalMax=100000; //pb.epsilon=0;
+                    pb.EvaluationMaximum = pb.SwarmSize.D * 10000;
+                    pb.Epsilon = 0.01;	// Acceptable error
+                    pb.ObjectiveValue = 390;
+                    //pb.EvaluationMaximum=100000; //pb.epsilon=0;
                     break;
 
                 case 103:// CEC 2005 F9, Rastrigin
@@ -96,10 +96,10 @@ namespace VPSO
                         pb.SwarmSize.maxS[d] = pb.SwarmSize.max[d];
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
-                    pb.epsilon = 0; //0.01; // 0.01;	// Acceptable error
-                    pb.objective = -330;       // Objective value
-                    pb.evalMax = pb.SwarmSize.D * 10000;
-                    pb.evalMax = 100000;
+                    pb.Epsilon = 0; //0.01; // 0.01;	// Acceptable error
+                    pb.ObjectiveValue = -330;       // Objective value
+                    pb.EvaluationMaximum = pb.SwarmSize.D * 10000;
+                    pb.EvaluationMaximum = 100000;
                     break;
 
                 case 104:// CEC 2005 F2  Schwefel
@@ -112,10 +112,10 @@ namespace VPSO
                         pb.SwarmSize.maxS[d] = pb.SwarmSize.max[d];
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
-                    pb.epsilon = 0.00001;	// Acceptable error
-                    pb.objective = -450;       // Objective value
-                    pb.evalMax = pb.SwarmSize.D * 10000;
-                    pb.evalMax = 1000;
+                    pb.Epsilon = 0.00001;	// Acceptable error
+                    pb.ObjectiveValue = -450;       // Objective value
+                    pb.EvaluationMaximum = pb.SwarmSize.D * 10000;
+                    pb.EvaluationMaximum = 1000;
                     break;
 
                 case 105:// CEC 2005 F7  Griewank (NON rotated)
@@ -128,9 +128,9 @@ namespace VPSO
                         pb.SwarmSize.maxS[d] = pb.SwarmSize.max[d];
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
-                    pb.epsilon = 0.01;	//Acceptable error
-                    pb.objective = -180;       // Objective value
-                    pb.evalMax = pb.SwarmSize.D * 10000;
+                    pb.Epsilon = 0.01;	//Acceptable error
+                    pb.ObjectiveValue = -180;       // Objective value
+                    pb.EvaluationMaximum = pb.SwarmSize.D * 10000;
                     break;
 
                 case 106:// CEC 2005 F8 Ackley (NON rotated)
@@ -143,9 +143,9 @@ namespace VPSO
                         pb.SwarmSize.maxS[d] = pb.SwarmSize.max[d];
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
-                    pb.epsilon = 0.0001;	// Acceptable error
-                    pb.objective = -140;       // Objective value
-                    pb.evalMax = pb.SwarmSize.D * 10000;
+                    pb.Epsilon = 0.0001;	// Acceptable error
+                    pb.ObjectiveValue = -140;       // Objective value
+                    pb.EvaluationMaximum = pb.SwarmSize.D * 10000;
 
                     break;
 
@@ -161,9 +161,9 @@ namespace VPSO
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
 
-                    pb.evalMax = 6000;// 6000	// Max number of evaluations for each run
-                    pb.epsilon = 0.0001;	//0.0001 Acceptable error
-                    pb.objective = 0;       // Objective value
+                    pb.EvaluationMaximum = 6000;// 6000	// Max number of evaluations for each run
+                    pb.Epsilon = 0.0001;	//0.0001 Acceptable error
+                    pb.ObjectiveValue = 0;       // Objective value
                     break;
 
                 case 1:		// Griewank
@@ -179,9 +179,9 @@ namespace VPSO
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
 
-                    pb.evalMax = 400000;
-                    pb.epsilon = 0.05;	// Acceptable error
-                    pb.objective = 0.000;       // Objective value
+                    pb.EvaluationMaximum = 400000;
+                    pb.Epsilon = 0.05;	// Acceptable error
+                    pb.ObjectiveValue = 0.000;       // Objective value
                     break;
 
                 case 2:		// Rosenbrock
@@ -197,9 +197,9 @@ namespace VPSO
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
 
-                    pb.evalMax = 300000; // 40000	
-                    pb.epsilon = 0.0001;	//0.0001 Acceptable error
-                    pb.objective = 0;       // Objective value
+                    pb.EvaluationMaximum = 300000; // 40000	
+                    pb.Epsilon = 0.0001;	//0.0001 Acceptable error
+                    pb.ObjectiveValue = 0;       // Objective value
                     break;
 
                 case 3:		// Rastrigin
@@ -213,9 +213,9 @@ namespace VPSO
                         pb.SwarmSize.maxS[d] = pb.SwarmSize.max[d];
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
-                    pb.evalMax = 200000; // 40000
-                    pb.epsilon = 0.0001;	//0.0001 Acceptable error
-                    pb.objective = 0;       // Objective value
+                    pb.EvaluationMaximum = 200000; // 40000
+                    pb.Epsilon = 0.0001;	//0.0001 Acceptable error
+                    pb.ObjectiveValue = 0;       // Objective value
                     break;
 
 
@@ -231,9 +231,9 @@ namespace VPSO
                         pb.SwarmSize.maxS[d] = pb.SwarmSize.max[d];
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
-                    pb.epsilon = 0.0001;
-                    pb.evalMax = 10000; //10000; 
-                    pb.objective = 0; // Objective value
+                    pb.Epsilon = 0.0001;
+                    pb.EvaluationMaximum = 10000; //10000; 
+                    pb.ObjectiveValue = 0; // Objective value
                     break;
 
                 case 5: // Ackley
@@ -248,9 +248,9 @@ namespace VPSO
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
 
-                    pb.evalMax = 3200;
-                    pb.epsilon = 0.000;
-                    pb.objective = 0;
+                    pb.EvaluationMaximum = 3200;
+                    pb.Epsilon = 0.000;
+                    pb.ObjectiveValue = 0;
                     break;
 
                 case 6: // Center-bias test function
@@ -266,8 +266,8 @@ namespace VPSO
                         pb.SwarmSize.maxS[d] = 105;
                     }
 
-                    pb.evalMax = 100; //
-                    pb.epsilon = 0.00;
+                    pb.EvaluationMaximum = 100; //
+                    pb.Epsilon = 0.00;
                     break;
 
                     // Pressure vessel (confinement method)
@@ -276,7 +276,7 @@ namespace VPSO
                     // (1.125, 0.625, 58.2901, 43.6927) => 7197.729
                     // (1.125, 0.625, 55.8592, 57.7315) => 7197.729
                     // If no granularity => min = 6059.7143
-                    pb.constraint = 3;
+                    pb.Constraint = 3;
                     pb.SwarmSize.D = 4;
 
                     pb.SwarmSize.min[0] = 1.125; pb.SwarmSize.max[0] = 12.5;
@@ -304,13 +304,13 @@ namespace VPSO
                         pb.SwarmSize.maxS[d] = pb.SwarmSize.max[d];
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
-                    pb.evalMax = 50000;
-                    pb.epsilon = 0.00001; //0.0000000001;	
-                    pb.objective = 7197.72893; //7197.7277771; 
+                    pb.EvaluationMaximum = 50000;
+                    pb.Epsilon = 0.00001; //0.0000000001;	
+                    pb.ObjectiveValue = 7197.72893; //7197.7277771; 
                     break;
 
                 case 8: // Compression spring
-                    pb.constraint = 4; // See confin.c
+                    pb.Constraint = 4; // See confin.c
                     pb.SwarmSize.D = 3;
 
                     pb.SwarmSize.min[0] = 1; pb.SwarmSize.max[0] = 70; pb.SwarmSize.q.Q[0] = 1;
@@ -322,9 +322,9 @@ namespace VPSO
                         pb.SwarmSize.maxS[d] = pb.SwarmSize.max[d];
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
-                    pb.evalMax = 20000;
-                    pb.epsilon = 1.0e-10;
-                    pb.objective = 2.6254214578;
+                    pb.EvaluationMaximum = 20000;
+                    pb.Epsilon = 1.0e-10;
+                    pb.ObjectiveValue = 2.6254214578;
                     break;
 
                 case 9: // Gear train
@@ -340,9 +340,9 @@ namespace VPSO
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
 
-                    pb.evalMax = 20000;
-                    pb.epsilon = 1.0e-13;
-                    pb.objective = 2.7e-12;
+                    pb.EvaluationMaximum = 20000;
+                    pb.Epsilon = 1.0e-13;
+                    pb.ObjectiveValue = 2.7e-12;
                     break;
 
                 case 10: // Cellular phone
@@ -357,10 +357,10 @@ namespace VPSO
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
 
-                    pb.evalMax = 20000; // 20000
-                    pb.epsilon = 1e-9;
-                    pb.objective = 0.005530517; // Best known result (2010-01-03)
-                    // pb.epsilon=0; pb.objective=0;
+                    pb.EvaluationMaximum = 20000; // 20000
+                    pb.Epsilon = 1e-9;
+                    pb.ObjectiveValue = 0.005530517; // Best known result (2010-01-03)
+                    // pb.epsilon=0; pb.ObjectiveValue=0;
                     break;
 
                 case 11: // PAPR/OFDM
@@ -374,11 +374,11 @@ namespace VPSO
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
 
-                    pb.evalMax = 10000;
+                    pb.EvaluationMaximum = 10000;
 
-                    pb.epsilon = 0.000001;	//0.0001 Acceptable error
-                    // pb.objective = 0.01328;  // Objective value for T1
-                    pb.objective = 0;
+                    pb.Epsilon = 0.000001;	//0.0001 Acceptable error
+                    // pb.ObjectiveValue = 0.01328;  // Objective value for T1
+                    pb.ObjectiveValue = 0;
                     break;
                 case 12: // Schwefel
                     pb.SwarmSize.D = 30;
@@ -393,9 +393,9 @@ namespace VPSO
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
 
-                    pb.evalMax = 900000;
-                    pb.epsilon = 0.000;
-                    pb.objective = 0;
+                    pb.EvaluationMaximum = 900000;
+                    pb.Epsilon = 0.000;
+                    pb.ObjectiveValue = 0;
                     break;
 
                 case 13: // Cutting stock  (see also perf()) 
@@ -411,9 +411,9 @@ namespace VPSO
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
 
-                    pb.evalMax = 100000;
-                    pb.epsilon = 0.00001;
-                    pb.objective = 940;
+                    pb.EvaluationMaximum = 100000;
+                    pb.Epsilon = 0.00001;
+                    pb.ObjectiveValue = 940;
 
                     break;
 
@@ -448,9 +448,9 @@ namespace VPSO
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
 
-                    pb.evalMax = 100000;
-                    pb.epsilon = 0.000000;
-                    pb.objective = 0;
+                    pb.EvaluationMaximum = 100000;
+                    pb.Epsilon = 0.000000;
+                    pb.ObjectiveValue = 0;
 
                     break;
 
@@ -459,9 +459,9 @@ namespace VPSO
                     // Optimum 0.0539498
 
                 case 15: // with Penalty method
-                    pb.constraint = 3;
+                    pb.Constraint = 3;
                     pb.SwarmSize.D = 5;
-                    pb.epsConstr = 0.0001;
+                    pb.EpsilonConstraint = 0.0001;
 
                     for (d = 0; d < 2; d++)
                     {
@@ -483,23 +483,23 @@ namespace VPSO
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
 
-                    pb.evalMax = 100000; //340000 ; 
-                    pb.epsilon = 0.0000001;
-                    pb.objective = 0; //0.0539498;
+                    pb.EvaluationMaximum = 100000; //340000 ; 
+                    pb.Epsilon = 0.0000001;
+                    pb.ObjectiveValue = 0; //0.0539498;
                     break;
 
                 case 16: // G3 (constrained)
                     pb.SwarmSize.D = 10;
-                    pb.objective = 0;
+                    pb.ObjectiveValue = 0;
                     for (d = 0; d < pb.SwarmSize.D; d++)
                     {
                         pb.SwarmSize.min[d] = 0;
                         pb.SwarmSize.max[d] = 1;
                         pb.SwarmSize.q.Q[d] = 0;
                     }
-                    pb.evalMax = 340000; //340000;
-                    pb.objective = 0;
-                    pb.epsilon = 1.0e-6;
+                    pb.EvaluationMaximum = 340000; //340000;
+                    pb.ObjectiveValue = 0;
+                    pb.Epsilon = 1.0e-6;
 
                     for (d = 0; d < pb.SwarmSize.D; d++)
                     {
@@ -513,16 +513,16 @@ namespace VPSO
 
                 case 17: // Lennard-Jones
                     nAtoms = 5; // in {2, ..., 15}
-                    pb.SwarmSize.D = 3 * nAtoms; pb.objective = lennard_jones[nAtoms - 2];
-                    pb.evalMax = 5000 + 3000 * nAtoms * (nAtoms - 1); // Empirical rule
-                    pb.epsilon = 1.0e-6;
+                    pb.SwarmSize.D = 3 * nAtoms; pb.ObjectiveValue = lennard_jones[nAtoms - 2];
+                    pb.EvaluationMaximum = 5000 + 3000 * nAtoms * (nAtoms - 1); // Empirical rule
+                    pb.Epsilon = 1.0e-6;
                     // Note: with this acceptable error, nAtoms=10 seems to be the maximum
                     //       possible value for a non-null success rate  (5%)
                     // 			 with SPSO 2007
 
-                    //pb.SwarmSize.D=3*21; pb.objective=-81.684;	
-                    //pb.SwarmSize.D=3*27; pb.objective=-112.87358;
-                    //pb.SwarmSize.D=3*38; pb.objective=-173.928427;
+                    //pb.SwarmSize.D=3*21; pb.ObjectiveValue=-81.684;	
+                    //pb.SwarmSize.D=3*27; pb.ObjectiveValue=-112.87358;
+                    //pb.SwarmSize.D=3*38; pb.ObjectiveValue=-173.928427;
 
                     for (d = 0; d < pb.SwarmSize.D; d++)
                     {
@@ -551,9 +551,9 @@ namespace VPSO
                         pb.SwarmSize.minS[d] = pb.SwarmSize.min[d];
                     }
 
-                    pb.evalMax = 100000;
-                    pb.objective = -1.4;
-                    pb.epsilon = 1.0e-6;
+                    pb.EvaluationMaximum = 100000;
+                    pb.ObjectiveValue = -1.4;
+                    pb.Epsilon = 1.0e-6;
                     break;
 
                 case 1000: // Landscape on the file fLandscape.txt
@@ -576,7 +576,7 @@ namespace VPSO
 
                         //scanNb=fscanf(fLandscape,"%f",&z);funct.fx[d]=z;
                     }
-                    pb.evalMax = 100;
+                    pb.EvaluationMaximum = 100;
                     break;
 
             } // End of 	switch (pb.function)
@@ -906,9 +906,9 @@ namespace VPSO
 
                     f = 0.6224 * x1 * x3 * x4 + 1.7781 * x2 * x3 * x3 + 3.1611 * x1 * x1 * x4 + 19.84 * x1 * x1 * x3;
 
-                    ff = Position.Constraint(xs, pb.function, pb.epsConstr);
+                    ff = Position.Constraint(xs, pb.function, pb.EpsilonConstraint);
 
-                    if (pb.constraint == 0)// Constraints, by penalty method
+                    if (pb.Constraint == 0)// Constraints, by penalty method
                     {
                         if (ff.f[1] > 0) { c = 1 + Math.Pow(10, 10) * ff.f[1]; f = f * c * c; }
                         if (ff.f[2] > 0) { c = 1 + ff.f[2]; f = f * c * c; }
@@ -929,8 +929,8 @@ namespace VPSO
 
                     f = Math.PI * Math.PI * x2 * x3 * x3 * (x1 + 2) * 0.25;
                     // Constraints
-                    ff = Position.Constraint(xs, pb.function, pb.epsConstr);
-                    if (pb.constraint == 0)
+                    ff = Position.Constraint(xs, pb.function, pb.EpsilonConstraint);
+                    if (pb.Constraint == 0)
                     {
                         if (ff.f[1] > 0) { c = 1 + ff.f[1]; f = f * c * c * c; }
                         if (ff.f[2] > 0) { c = 1 + ff.f[1]; f = f * c * c * c; }
@@ -1102,9 +1102,9 @@ namespace VPSO
                     // x3, x4, x5 [-3.2, 3.2]
 
                     f = Math.Exp(xs.x[0] * xs.x[1] * xs.x[2] * xs.x[3] * xs.x[4]);
-                    ff = Position.Constraint(xs, pb.function, pb.epsConstr);
+                    ff = Position.Constraint(xs, pb.function, pb.EpsilonConstraint);
 
-                    if (pb.constraint == 0) // Penalty method
+                    if (pb.Constraint == 0) // Penalty method
                     {
                         if (ff.f[1] > 0) f = f + ff.f[1];
                         if (ff.f[2] > 0) f = f + ff.f[2];
@@ -1181,7 +1181,7 @@ namespace VPSO
 
             }
 
-            ff.f[0] = Math.Abs(f - pb.objective);
+            ff.f[0] = Math.Abs(f - pb.ObjectiveValue);
             return ff;
 
         }

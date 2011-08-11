@@ -81,7 +81,7 @@ namespace VPSO
             return xv;
         }
 
-        public static Position Discrete(Position pos0, Problem pb)
+        public static Position Discrete(Position pos0, Problem.Problem pb)
         {
             if (pb.SwarmSize.valueNb > 0) // The search space is a list of values
             {

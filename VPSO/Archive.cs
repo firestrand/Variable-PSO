@@ -29,7 +29,7 @@ namespace VPSO
             else Rank = 0; // We re-use the memory cyclically 
         }
 
-        public Position InitializeFar(Problem pb)
+        public Position InitializeFar(Problem.Problem pb)
         {
             // Try to find a new position that is "far" from all the memorised ones
             //Note: memPos is a global variable
@@ -77,7 +77,7 @@ namespace VPSO
             }
 
             xFar = Position.Discrete(xFar, pb);
-            xFar.f = Problem.perf(xFar, pb);
+            xFar.f = Problem.Problem.perf(xFar, pb);
             return xFar;
 
         }

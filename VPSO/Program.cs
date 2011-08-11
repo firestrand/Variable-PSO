@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VPSO
 {
-    class Program
+    public class Program
     {
         // Global variables
         public static int dLBest; 			// For information 
@@ -35,7 +35,7 @@ namespace VPSO
             int nFailure;				// Number of unsuccessful runs
             double logProgressMean = 0;
             Parameters parameters = new Parameters();
-            Problem pb;
+            Problem.Problem pb;
             int runMax;
             Result result;
             double successRate;
@@ -84,7 +84,7 @@ namespace VPSO
 
             // =========================================================== 
 
-            pb = Problem.problemDef(functionCode, null);//fLandscape); fLandscape is for when the landscape is read from a file.
+            pb = Problem.Problem.problemDef(functionCode, null);//fLandscape); fLandscape is for when the landscape is read from a file.
 
             /* -----------------------------------------------------
              PARAMETERS and OPTIONS 
@@ -156,7 +156,7 @@ namespace VPSO
 
                 convRateMean = convRateMean + result.convRate;
 
-                if (error > pb.epsilon) // Failure
+                if (error > pb.Epsilon) // Failure
                 {
                     nFailure = nFailure + 1;
                 }
@@ -221,10 +221,10 @@ namespace VPSO
 
             //if (run > 1)
             Console.WriteLine("Best min value = {0}", bestBest.f.f[0]);
-            if (pb.constraint > 0)
+            if (pb.Constraint > 0)
             {
-                Console.WriteLine("{0} constraints (should be negative): ", pb.constraint);
-                for (n = 0; n < pb.constraint; n++) Console.WriteLine("{0} ", bestBest.f.f[n + 1]);
+                Console.WriteLine("{0} constraints (should be negative): ", pb.Constraint);
+                for (n = 0; n < pb.Constraint; n++) Console.WriteLine("{0} ", bestBest.f.f[n + 1]);
             }
 
             // Display the best position
@@ -374,7 +374,7 @@ namespace VPSO
             return pot;
 
         }
-        static XV move(Result R, int s, int g, Problem pb,
+        static XV move(Result R, int s, int g, Problem.Problem pb,
                     Parameters parameters)
         {
             double c1, c2;
@@ -503,7 +503,7 @@ namespace VPSO
 
         // ===========================================================
 
-        static Result PSO(Parameters parameters, Problem pb, int level)
+        static Result PSO(Parameters parameters, Problem.Problem pb, int level)
         {
             int added; // For information 
             Fitness error = new Fitness(Constants.fMax);
@@ -572,7 +572,7 @@ namespace VPSO
             // First evaluations
             for (s = 0; s < R.SW.S; s++)
             {
-                R.SW.X[s].f = Problem.perf(R.SW.X[s], pb);
+                R.SW.X[s].f = Problem.Problem.perf(R.SW.X[s], pb);
                 R.SW.P[s] = R.SW.X[s];	// Best position = current one
             }
 
@@ -585,10 +585,10 @@ namespace VPSO
 
             // Display the best
             Console.WriteLine("Best value after init. {0} ", R.SW.P[R.SW.best].f.f[0]);
-            if (pb.constraint > 0)
+            if (pb.Constraint > 0)
             {
                 Console.WriteLine("Constraints (should be < 0) ");
-                for (n = 0; n < pb.constraint; n++) Console.WriteLine("{0} ", error.f[n + 1]);
+                for (n = 0; n < pb.Constraint; n++) Console.WriteLine("{0} ", error.f[n + 1]);
             }
 
             //fprintf(f_run,"\n Best value after init. %f ", errorPrev );
@@ -684,7 +684,7 @@ namespace VPSO
                     // Decide to stop or not
                     errorTot = R.SW.P[R.SW.best].f.errorFC();
 
-                    if (errorTot > pb.epsilon && nEval < pb.evalMax)
+                    if (errorTot > pb.Epsilon && nEval < pb.EvaluationMaximum)
                         noStop = 0;	// Won't stop
                     else // Failure
                     {
@@ -746,7 +746,7 @@ namespace VPSO
                         s = R.SW.S;
                         R.SW.X[s] = memPos.InitializeFar(pb); // Init in a non-searched area
                         R.SW.X[s] = Position.Discrete(xvNorm.x, pb); // If discrete search space
-                        R.SW.X[s].f = Problem.perf(R.SW.X[s], pb);	 // Evaluation			
+                        R.SW.X[s].f = Problem.Problem.perf(R.SW.X[s], pb);	 // Evaluation			
                         R.SW.V[s] = Velocity.Initialize(R.SW.X[s], pb.SwarmSize); // Init velocity						
                         R.SW.P[s] = R.SW.X[s].Clone(); // Previous best = current position								
                         R.SW.S = R.SW.S + 1; // Increase the swarm size
@@ -823,7 +823,7 @@ namespace VPSO
         static int best(Swarm SW)
         {
             // Find the rank of the best position
-            // 	Remember that f is Math.Abs(fitness-objective)
+            // 	Remember that f is Math.Abs(fitness-ObjectiveValue)
             // 	We want to minimise it
             int s = 0;
             int best = 0;
