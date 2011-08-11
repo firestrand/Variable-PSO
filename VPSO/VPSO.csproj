@@ -50,6 +50,7 @@
     <Compile Include="Landscape.cs" />
     <Compile Include="Parameters.cs" />
     <Compile Include="Position.cs" />
+    <Compile Include="Problem\CEC2005F1Circle.cs" />
     <Compile Include="Problem\Problem.cs" />
     <Compile Include="Problem\ProblemBase.cs" />
     <Compile Include="Program.cs" />
