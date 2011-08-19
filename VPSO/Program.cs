@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VPSO.Problem;
 
 namespace VPSO
 {
@@ -35,7 +36,7 @@ namespace VPSO
             int nFailure;				// Number of unsuccessful runs
             double logProgressMean = 0;
             Parameters parameters = new Parameters();
-            Problem.Problem pb;
+            ProblemBase pb;
             int runMax;
             Result result;
             double successRate;
@@ -84,7 +85,7 @@ namespace VPSO
 
             // =========================================================== 
 
-            pb = Problem.Problem.problemDef(functionCode, null);//fLandscape); fLandscape is for when the landscape is read from a file.
+            pb = new CEC2005F1Circle();//Problem.Problem.problemDef(functionCode, null);//fLandscape); fLandscape is for when the landscape is read from a file.
 
             /* -----------------------------------------------------
              PARAMETERS and OPTIONS 
@@ -374,7 +375,7 @@ namespace VPSO
             return pot;
 
         }
-        static XV move(Result R, int s, int g, Problem.Problem pb,
+        static XV move(Result R, int s, int g, IProblem pb,
                     Parameters parameters)
         {
             double c1, c2;
@@ -503,7 +504,7 @@ namespace VPSO
 
         // ===========================================================
 
-        static Result PSO(Parameters parameters, Problem.Problem pb, int level)
+        static Result PSO(Parameters parameters, IProblem pb, int level)
         {
             int added; // For information 
             Fitness error = new Fitness(Constants.fMax);
@@ -572,7 +573,7 @@ namespace VPSO
             // First evaluations
             for (s = 0; s < R.SW.S; s++)
             {
-                R.SW.X[s].f = Problem.Problem.perf(R.SW.X[s], pb);
+                R.SW.X[s].f = pb.Evaluate(R.SW.X[s]);
                 R.SW.P[s] = R.SW.X[s];	// Best position = current one
             }
 
@@ -746,7 +747,7 @@ namespace VPSO
                         s = R.SW.S;
                         R.SW.X[s] = memPos.InitializeFar(pb); // Init in a non-searched area
                         R.SW.X[s] = Position.Discrete(xvNorm.x, pb); // If discrete search space
-                        R.SW.X[s].f = Problem.Problem.perf(R.SW.X[s], pb);	 // Evaluation			
+                        R.SW.X[s].f = pb.Evaluate(R.SW.X[s]);	 // Evaluation			
                         R.SW.V[s] = Velocity.Initialize(R.SW.X[s], pb.SwarmSize); // Init velocity						
                         R.SW.P[s] = R.SW.X[s].Clone(); // Previous best = current position								
                         R.SW.S = R.SW.S + 1; // Increase the swarm size

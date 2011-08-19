@@ -46,6 +46,8 @@ namespace VPSO.Problem
             }
             var ff = new Fitness(Constants.fMax);
             ff.f[0] = Math.Abs(f - ObjectiveValue);
+            //TODO: Refactor
+            Program.nEval = Program.nEval + 1;
             return ff;
         }
     }

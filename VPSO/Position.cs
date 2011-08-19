@@ -1,4 +1,5 @@
 ﻿using System;
+using VPSO.Problem;
 
 namespace VPSO
 {
@@ -81,7 +82,7 @@ namespace VPSO
             return xv;
         }
 
-        public static Position Discrete(Position pos0, Problem.Problem pb)
+        public static Position Discrete(Position pos0, IProblem pb)
         {
             if (pb.SwarmSize.valueNb > 0) // The search space is a list of values
             {
@@ -93,7 +94,10 @@ namespace VPSO
             return pos;
 
         }
-
+        public static Fitness Constraint(Position x, IProblem pb)
+        {
+            throw new NotImplementedException();
+        }
         public static Fitness Constraint(Position x, int functCode, double epsConstr)
         {
             // ff[0] is defined in perf()

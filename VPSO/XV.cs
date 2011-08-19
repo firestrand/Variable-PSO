@@ -17,7 +17,7 @@ namespace VPSO
         public Velocity v;
 
         public void Confinement(
-                              Problem.Problem pb)
+                              Problem.IProblem pb)
         {
             // Confinement and evaluation
             // Note: the two are together, for depending on the clamping option
@@ -41,7 +41,7 @@ namespace VPSO
 
             if (pb.Constraint != 0)
             {
-                Fitness ff = Position.Constraint(this.x, pb.function, pb.EpsilonConstraint);
+                Fitness ff = Position.Constraint(x, pb);
 
                 for (int i = 1; i < ff.size; i++)
                 {
@@ -61,7 +61,7 @@ namespace VPSO
             x = Position.Quantis(x, pb.SwarmSize);
 
             // Evaluation
-            x.f = Problem.Problem.perf(x, pb);
+            x.f = pb.Evaluate(x);
         }
     };
 }

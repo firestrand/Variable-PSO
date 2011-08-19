@@ -1,4 +1,5 @@
 ﻿using System;
+using VPSO.Problem;
 
 namespace VPSO
 {
@@ -29,14 +30,14 @@ namespace VPSO
             else Rank = 0; // We re-use the memory cyclically 
         }
 
-        public Position InitializeFar(Problem.Problem pb)
+        public Position InitializeFar(IProblem pb)
         {
             // Try to find a new position that is "far" from all the memorised ones
             //Note: memPos is a global variable
             double[] coord = new double[Constants.MMax];
             double[] interv = new double[2];
 
-            var xFar = new Position(Constants.DMax) {size = pb.SwarmSize.D};
+            var xFar = new Position(Constants.DMax) { size = pb.SwarmSize.D };
 
             for (int d = 0; d < pb.SwarmSize.D; d++) // For each dimension
             {
@@ -60,7 +61,7 @@ namespace VPSO
                     delta = interv[1] - interv[0];
                 }
 
-                
+
 
                 // Particular case, xMax
                 if (pb.SwarmSize.max[d] - coord[this.Size - 1] > delta)
@@ -77,7 +78,7 @@ namespace VPSO
             }
 
             xFar = Position.Discrete(xFar, pb);
-            xFar.f = Problem.Problem.perf(xFar, pb);
+            xFar.f = pb.Evaluate(xFar);
             return xFar;
 
         }

@@ -5,7 +5,18 @@ using System.Text;
 
 namespace VPSO.Problem
 {
-    public abstract class ProblemBase
+    public interface IProblem
+    {
+        int Constraint { get; set; }
+        double Epsilon { get; set; }
+        double EpsilonConstraint { get; set; }
+        int EvaluationMaximum { get; set; }
+        double ObjectiveValue { get; set; }
+        Position Solution { get; set; }
+        SwarmSize SwarmSize { get; set; }
+        Fitness Evaluate(Position x);
+    }
+    public abstract class ProblemBase : IProblem
     {
         
 

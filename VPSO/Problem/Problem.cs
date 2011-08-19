@@ -50,7 +50,7 @@ namespace VPSO.Problem
 
 
             // ------------------ Search space
-            switch (pb.function)
+            switch (functionCode)
             {
                 case 100: // CEC 2005 F1
                     pb.SwarmSize.D = 30;//30; 
